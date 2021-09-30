@@ -11,6 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import gym
+import matplotlib.pyplot as plt
 
 BATCH_SIZE = 32
 LR = 0.01
@@ -95,6 +96,7 @@ class DQN(object):
         self.optimizer.step()
 
 
+
 if __name__ == '__main__':
     dqn = DQN()
 
@@ -113,7 +115,7 @@ if __name__ == '__main__':
             x, x_dot, theta, theta_dot = s_
             r1 = (env.x_threshold - abs(x)) / env.x_threshold - 0.8
             r2 = (env.theta_threshold_radians - abs(theta)) / env.theta_threshold_radians - 0.5
-            r=r1+r2
+            r = r1 + r2
             dqn.store_transition(s, a, r, s_)
             ep_r += r
             if dqn.memory_counter > MEMORY_CAPACITY:
