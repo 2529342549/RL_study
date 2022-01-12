@@ -1,5 +1,4 @@
 import torch
-import torch.autograd as autograd
 import torch.nn as nn
 
 
@@ -14,7 +13,7 @@ class Policy(nn.Module):
         self.action_mean.bias.data.mul_(0.0)
 
         self.action_log_std = nn.Parameter(torch.zeros(1, num_outputs))
-
+        # print(self.action_log_std)
         self.saved_actions = []
         self.rewards = []
         self.final_value = 0
@@ -24,10 +23,17 @@ class Policy(nn.Module):
         x = torch.tanh(self.affine2(x))
 
         action_mean = self.action_mean(x)
+        # print(action_mean)
         action_log_std = self.action_log_std.expand_as(action_mean)
+        # print(action_log_std)
         action_std = torch.exp(action_log_std)
-
+        # print(action_std)
         return action_mean, action_log_std, action_std
+
+
+# net = Policy(num_inputs=11, num_outputs=2)
+# for param in net.parameters():
+#     print(type(param.data), param.size())
 
 
 class Value(nn.Module):

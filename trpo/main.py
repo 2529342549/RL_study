@@ -27,16 +27,17 @@ parser.add_argument('--damping', type=float, default=1e-1, metavar='G', help='da
 parser.add_argument('--seed', type=int, default=543, metavar='N', help='random seed (default: 1)')
 parser.add_argument('--batch-size', type=int, default=15000, metavar='N', help='random seed (default: 1)')
 parser.add_argument('--render', action='store_true', help='render the environment')
-parser.add_argument('--log-interval', type=int, default=1, metavar='N',help='interval between training status logs (default: 10)')
+parser.add_argument('--log-interval', type=int, default=1, metavar='N', help='interval between training status logs (default: 10)')
 args = parser.parse_args()
 
 env = gym.make(args.env_name)
 
-num_inputs = env.observation_space.shape[0]
-num_actions = env.action_space.shape[0]
+num_inputs = env.observation_space.shape[0]  # 11
+# print(env.observation_space)
+num_actions = env.action_space.shape[0]  # 2
 
 env.seed(args.seed)
-torch.manual_seed(args.seed)
+torch.manual_seed(args.seed)  # 设置种子用于生成随机数，以使得结果是确定的
 
 policy_net = Policy(num_inputs, num_actions)
 value_net = Value(num_inputs)
@@ -44,8 +45,11 @@ value_net = Value(num_inputs)
 
 def select_action(state):
     state = torch.from_numpy(state).unsqueeze(0)
+    # print(state)
     action_mean, _, action_std = policy_net(Variable(state))
+    # 返回从单(action_mean, action_std)正态分布中提取的随机数的张量
     action = torch.normal(action_mean, action_std)
+    # print(action)
     return action
 
 
@@ -55,7 +59,7 @@ def update_params(batch):
     actions = torch.Tensor(np.concatenate(batch.action, 0))
     states = torch.Tensor(batch.state)
     values = value_net(Variable(states))
-
+    # print(actions.size(0))
     returns = torch.Tensor(actions.size(0), 1)
     deltas = torch.Tensor(actions.size(0), 1)
     advantages = torch.Tensor(actions.size(0), 1)
@@ -63,6 +67,7 @@ def update_params(batch):
     prev_return = 0
     prev_value = 0
     prev_advantage = 0
+    print(range(rewards.size(0)))
     for i in reversed(range(rewards.size(0))):
         returns[i] = rewards[i] + args.gamma * prev_return * masks[i]
         deltas[i] = rewards[i] + args.gamma * prev_value * masks[i] - values.data[i]
@@ -133,8 +138,9 @@ for i_episode in count(1):
     num_episodes = 0
     while num_steps < args.batch_size:
         state = env.reset()
+        # print(state)
         state = running_state(state)
-
+        # print(state)
         reward_sum = 0
         for t in range(10000):  # Don't infinite loop while learning
             action = select_action(state)
@@ -150,18 +156,19 @@ for i_episode in count(1):
 
             memory.push(state, np.array([action]), mask, next_state, reward)
 
-
-            env.render()
+            # env.render()
             if done:
                 break
 
             state = next_state
+
         num_steps += (t - 1)
         num_episodes += 1
         reward_batch += reward_sum
 
     reward_batch /= num_episodes
     batch = memory.sample()
+    print(batch)
     update_params(batch)
 
     if i_episode % args.log_interval == 0:

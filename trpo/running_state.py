@@ -43,7 +43,7 @@ class Runningstat(object):
 
 class ZFilter:
     """
-    y=(x-mean)/std
+    standardization:y=(x-mean)/std
     using running estimates of mean,std
     """
 
