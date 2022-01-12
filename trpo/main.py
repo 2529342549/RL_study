@@ -65,7 +65,7 @@ def select_action(state):
 
 def update_params(batch):
     """
-    update params
+       update params
     """
     rewards = torch.Tensor(batch.reward)
     masks = torch.Tensor(batch.mask)
