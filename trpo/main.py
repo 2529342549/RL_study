@@ -62,8 +62,11 @@ def select_action(state):
     # print(action)
     return action
 
-# update params
+
 def update_params(batch):
+    """
+    update params
+    """
     rewards = torch.Tensor(batch.reward)
     masks = torch.Tensor(batch.mask)
     actions = torch.Tensor(np.concatenate(batch.action, 0))
@@ -175,7 +178,7 @@ for i_episode in count(1):
 
             memory.push(state, np.array([action]), mask, next_state, reward)
 
-            env.render()
+            # env.render()
             if done:
                 break
 
@@ -187,7 +190,7 @@ for i_episode in count(1):
 
     reward_batch /= num_episodes
     batch = memory.sample()
-    print(batch)
+    # print(batch)
     update_params(batch)
 
     if i_episode % args.log_interval == 0:
