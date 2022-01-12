@@ -15,7 +15,7 @@ Contributions are very welcome. If you know how to make this code better, don't 
 ## Usage
 
 ```
-python main.py --env-name "Reacher-v2"
+python3 main.py --env-name "Reacher-v2"
 ```
 
 ## Recommended hyper parameters
