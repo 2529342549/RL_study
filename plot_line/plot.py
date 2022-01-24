@@ -19,7 +19,7 @@ def main():
     parser.add_argument('--plot_reward', default=True, action='store_true')
     parser.add_argument('--plot_train', default=True, action='store_true')
     parser.add_argument('--plot_new_train', default=True, action='store_true')
-    parser.add_argument('--window_size', type=int, default=300)
+    parser.add_argument('--window_size', type=int, default=500)
     args = parser.parse_args()
 
     # define the names of the models you want to plot and the longest episodes you want to show
