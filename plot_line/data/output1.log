@@ -25,7 +25,7 @@ update:
 2022-01-23 23:48:30,414, INFO: Using device: cpu
 2022-01-23 23:48:30,417, INFO: Policy: LSTM-RL w/o pairwise interaction module
 2022-01-23 23:48:30,418, INFO: human number: 5
-2022-01-23 23:48:30,418, INFO: Not randomize human's radius and preferred speed
+2022-01-23 23:48:30,418, INFO: Not randomize human's radius and preferred speeds
 2022-01-23 23:48:30,418, INFO: TRAIN_newing simulation: circle_crossing, test simulation: circle_crossing
 2022-01-23 23:48:30,418, INFO: Square width: 10.0, circle width: 4.0
 2022-01-23 23:48:30,419, INFO: Current learning rate: 0.010000
