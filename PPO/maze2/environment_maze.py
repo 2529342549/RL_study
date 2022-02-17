@@ -13,6 +13,7 @@ HEIGHT = 21  # grid height
 WIDTH = 21  # grid width
 
 
+# noinspection PyTypeChecker
 class Env(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
@@ -174,9 +175,9 @@ class Env(tk.Tk):
             reward = -20
             done = True
         # elif
-            # print self.migong
-            # reward = -10
-            # done = True
+        # print self.migong
+        # reward = -10
+        # done = True
         else:
             reward = -0.1
             done = False
