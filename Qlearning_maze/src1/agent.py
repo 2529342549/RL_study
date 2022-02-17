@@ -106,7 +106,5 @@ class SarsaLambdaTable(RL):
 
         self.eligibility_trace.loc[sig, :] *= 0
         self.eligibility_trace.loc[sig, a] = 1
-
         self.q_table += self.lr * self.eligibility_trace * error
-
         self.eligibility_trace *= self.gamma * self.lambda_

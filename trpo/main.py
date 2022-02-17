@@ -84,9 +84,9 @@ def update_params(batch):
     for i in reversed(range(rewards.size(0))):
         returns[i] = rewards[i] + args.gamma * prev_return * masks[i]
         deltas[i] = rewards[i] + args.gamma * \
-            prev_value * masks[i] - values.data[i]
+                    prev_value * masks[i] - values.data[i]
         advantages[i] = deltas[i] + args.gamma * \
-            args.tau * prev_advantage * masks[i]
+                        args.tau * prev_advantage * masks[i]
 
         prev_return = returns[i, 0]
         prev_value = values.data[i, 0]
@@ -133,7 +133,7 @@ def update_params(batch):
         log_prob = normal_log_density(
             Variable(actions), action_means, action_log_stds, action_stds)
         action_loss = -Variable(advantages) * \
-            torch.exp(log_prob - Variable(fixed_log_prob))
+                      torch.exp(log_prob - Variable(fixed_log_prob))
         return action_loss.mean()
 
     def get_kl():
@@ -143,7 +143,7 @@ def update_params(batch):
         log_std0 = Variable(log_std1.data)
         std0 = Variable(std1.data)
         kl = log_std1 - log_std0 + \
-            (std0.pow(2) + (mean0 - mean1).pow(2)) / (2.0 * std1.pow(2)) - 0.5
+             (std0.pow(2) + (mean0 - mean1).pow(2)) / (2.0 * std1.pow(2)) - 0.5
         return kl.sum(1, keepdim=True)
 
     trpo_step(policy_net, get_loss, get_kl, args.max_kl, args.damping)
