@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import math
 
 import numpy as np
 import time
@@ -32,9 +32,9 @@ class Env(tk.Tk):
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                       [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -69,7 +69,7 @@ class Env(tk.Tk):
         self.triangle2 = canvas.create_image(195, 435, image=self.shapes[1])
         self.triangle3 = canvas.create_image(435, 195, image=self.shapes[1])
         self.triangle4 = canvas.create_image(435, 435, image=self.shapes[1])
-        self.circle = canvas.create_image(255, 225, image=self.shapes[2])
+        self.circle = canvas.create_image(255, 165, image=self.shapes[2])
         self.yellow_rectangle1 = canvas.create_image(255, 315, image=self.shapes[1])
         self.yellow_rectangle2 = canvas.create_image(285, 315, image=self.shapes[1])
         self.yellow_rectangle3 = canvas.create_image(345, 225, image=self.shapes[1])
@@ -110,6 +110,8 @@ class Env(tk.Tk):
         self.start_env()
         # return observation
         res_state = np.array(self.coords_to_state(self.canvas.coords(self.rectangle)))
+        # res_state = self.get_state()
+        # print(res_state)
         return res_state
 
     def render(self):
@@ -118,8 +120,8 @@ class Env(tk.Tk):
 
     def get_state(self):
         data = np.ravel(self.migong, order='C')
-
-        return data
+        res_state = np.array(self.coords_to_state(self.canvas.coords(self.rectangle)))
+        return res_state
 
     def step(self, action):
         state = self.canvas.coords(self.rectangle)
@@ -160,31 +162,38 @@ class Env(tk.Tk):
         # print next_state
         _state = self.coords_to_state(next_state)
         # print(_state)
-
+        np_state = np.array(_state)
         _circle = self.coords_to_state(self.canvas.coords(self.circle))
+        np_circle = np.array(_circle)
+        # print(_state, _circle)
         # reward function
 
         if next_state == self.canvas.coords(self.circle):
-            reward = 20
+            reward = 100
             done = True
         elif next_state in [self.canvas.coords(self.triangle1), self.canvas.coords(self.triangle2),
                             self.canvas.coords(self.triangle3), self.canvas.coords(self.triangle4),
                             self.canvas.coords(self.yellow_rectangle1), self.canvas.coords(self.yellow_rectangle2),
                             self.canvas.coords(self.yellow_rectangle3), self.canvas.coords(self.yellow_rectangle4)]:
             # print 'coll'
-            reward = -20
+            reward = -100
             done = True
-        # elif
+        elif math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1]) < 2:
+            reward = 5
+            done = False
+        elif _state[0] in [0, 20] or _state[1] in [0, 20]:
+            reward = -100
+            done = True
         # print self.migong
         # reward = -10
         # done = True
         else:
-            reward = -0.1
+            reward = -1
             done = False
 
         # next_state = self.coords_to_state(next_state)
-        next_state = np.array(self.coords_to_state(next_state))
+        next_state = np.array(_state)
         # state = self.coords_to_state(state)
         # print(state, next_state, [self.x1, self.y1])
         # print self.get_state()
-        return self.get_state(), reward, done
+        return next_state, reward, done

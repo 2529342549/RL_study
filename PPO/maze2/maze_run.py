@@ -30,16 +30,18 @@ import math, random
 import time
 
 # Parameters
+from logger import Log
 from environment_maze import Env
 
-gamma = 0.9
+logging = Log(__name__).getlog()
+gamma = 0.99
 render = False
 seed = 1
 log_interval = 10
 
 # env = gym.make('CartPole-v0').unwrapped
 # action个数为19，observation为115。
-num_state = 441
+num_state = 2
 num_action = 4
 env = Env()
 torch.manual_seed(seed)  # 为CPU设置种子用于生成随机数，以使得结果是确定的
@@ -50,11 +52,13 @@ Transition = namedtuple('Transition', ['state', 'action', 'a_log_prob', 'reward'
 class Actor(nn.Module):
     def __init__(self):
         super(Actor, self).__init__()
-        self.fc1 = nn.Linear(num_state, 100)
-        self.action_head = nn.Linear(100, num_action)
+        self.fc1 = nn.Linear(num_state, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.action_head = nn.Linear(256, num_action)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
         action_prob = F.softmax(self.action_head(x), dim=1)
         return action_prob
 
@@ -62,11 +66,13 @@ class Actor(nn.Module):
 class Critic(nn.Module):
     def __init__(self):
         super(Critic, self).__init__()
-        self.fc1 = nn.Linear(num_state, 100)
-        self.state_value = nn.Linear(100, 1)
+        self.fc1 = nn.Linear(num_state, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.state_value = nn.Linear(256, 1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
         value = self.state_value(x)
         return value
 
@@ -74,8 +80,8 @@ class Critic(nn.Module):
 class PPO(object):
     clip_param = 0.2
     max_grad_norm = 0.5
-    ppo_update_time = 10
-    buffer_capacity = 1000
+    ppo_update_time = 30
+    buffer_capacity = 10000
     batch_size = 64
 
     def __init__(self):
@@ -87,18 +93,18 @@ class PPO(object):
         self.counter = 0
         self.training_step = 0
         self.load_models = False
-        self.load_ep = 210
+        # self.load_ep = 210
         # self.writer = SummaryWriter('../exp')
         # SummaryWriter 类提供了一个高级 API，用于在给定目录中创建事件文件并向其中添加摘要和事件。该类异步更新文件内容。这允许训练程序直接从训练循环调用方法将数据添加到文件中，而不会减慢训练速度。
         self.actor_optimizer = optim.Adam(self.actor_net.parameters(), 1e-3)
         self.critic_net_optimizer = optim.Adam(self.critic_net.parameters(), 3e-3)
         # Adam(Adaptive Moment Estimation)本质上是带有动量项的RMSprop，它利用梯度的一阶矩估计和二阶矩估计动态调整每个参数的学习率。它的优点主要在于经过偏置校正后，每一次迭代学习率都有个确定范围，使得参数比较平稳。
         if self.load_models:
-            load_model1 = torch.load("PPO/search_goal/model/210actor.pkl")
-            load_model2 = torch.load("PPO/search_goal/model/210criter.pkl")
+            load_model1 = torch.load("/home/hhd/PycharmProjects/RL_study_/PPO/maze2/data/actor.pkl")
+            load_model2 = torch.load("/home/hhd/PycharmProjects/RL_study_/PPO/maze2/data/criter.pkl")
             self.actor_net.load_state_dict(load_model1)
             self.critic_net.load_state_dict(load_model2)
-            print("load model:", str(self.load_ep))
+            # print("load model:", str(self.load_ep))
 
     def select_action(self, state):
         state = torch.from_numpy(state).float().unsqueeze(0)
@@ -106,7 +112,7 @@ class PPO(object):
             action_prob = self.actor_net(state)
         c = Categorical(action_prob)
         action = c.sample()
-        # print action_prob,action
+        # print(action_prob, action)
         return action.item(), action_prob[:, action.item()].item()
 
     def get_value(self, state):
@@ -119,9 +125,9 @@ class PPO(object):
     def save_param(self, e):
         state = {'actor_net': self.actor_net.state_dict(), 'critic_net': self.critic_net.state_dict(),
                  'actor_optimizer': self.actor_optimizer.state_dict(), 'critic_optimizer': self.critic_net_optimizer, 'epoch': e}
-        torch.save(state, "/home/hhd/PycharmProjects/RL_study_/PPO/search_goal/model/" + str(e) + "a.pt")
-        # torch.save(self.actor_net.state_dict(),"/home/ffd/QDN/model/"+str(e)+"actor.pkl")
-        # torch.save(self.critic_net.state_dict(), "/home/ffd/QDN/model/"+str(e) +"criter.pkl")
+        # torch.save(state, "/home/hhd/PycharmProjects/RL_study_/PPO/search_goal/model/" + str(e) + "a.pt")
+        torch.save(self.actor_net.state_dict(), "/home/hhd/PycharmProjects/RL_study_/PPO/maze2/data/" + "actor.pkl")
+        torch.save(self.critic_net.state_dict(), "/home/hhd/PycharmProjects/RL_study_/PPO/maze2/data/" + "criter.pkl")
 
     def store_transition(self, transition):
         self.buffer.append(transition)
@@ -129,7 +135,9 @@ class PPO(object):
 
     def update(self, i_ep):
         # Transition(state, action, action_prob, reward, next_state)
-        state = torch.tensor([t.state for t in self.buffer], dtype=torch.float)
+        states = [t.state for t in self.buffer]
+        state = torch.tensor(np.array(states), dtype=torch.float32)
+
         action = torch.tensor([t.action for t in self.buffer], dtype=torch.long).view(-1, 1)
         reward = [t.reward for t in self.buffer]
         # print reward
@@ -162,7 +170,8 @@ class PPO(object):
                 # epoch iteration, PPO core!!!
                 action_prob = self.actor_net(state[index]).gather(1, action[index])  # new policy
 
-                ratio = (action_prob / old_action_log_prob[index])
+                # ratio = (action_prob / old_action_log_prob[index])
+                ratio = (action_prob - old_action_log_prob[index]).exp()
                 surr1 = ratio * advantage
                 surr2 = torch.clamp(ratio, 1 - self.clip_param, 1 + self.clip_param) * advantage
 
@@ -210,15 +219,17 @@ def main():
     # env=Env()
     rewards = []
     for e in range(10000):
-        env.reset()  # env.reset()函数用于重置环境
+        state = env.reset()  # env.reset()函数用于重置环境
 
         # print(type(state), len(state))  # type:'numpy.ndarray' # len:364
         # print state
         # if render: env.render()#env.render()函数用于渲染出当前的智能体以及环境的状态
         episode_reward_sum = 0  # 初始化该循环对应的episode的总奖励
         episode_step = 6000
-        state = env.get_state()
+        # state = env.get_state()
+        # print(state)
         for t in range(episode_step):
+            env.render()
             action, action_prob = agent.select_action(state)
             # print action_prob, action
             # action_prob,action: tensor([[0.4578, 0.2056, 0.1278, 0.0028, 0.2060]]) tensor([1])
@@ -229,21 +240,22 @@ def main():
             # print next_state
             state = next_state
             episode_reward_sum += reward
-            if e % 10 == 0:
-                # dqn.save_model(str(e))
+            if e % 50 == 0:
                 agent.save_param(e)
             if t >= 1000:
-                print 'time out'
+                print('time out')
                 done = True
 
             if done:
                 m, s = divmod(int(time.time() - start_time), 60)
                 h, m = divmod(m, 60)
                 agent.update(e)
-                print ('Ep: %d score: %.2f memory: %d episode_step: %d time: %d:%02d:%02d' %
-                       (e, episode_reward_sum, agent.counter, t, h, m, s))
+                # print('Ep: %d score: %.2f memory: %d episode_step: %d time: %d:%02d:%02d' %
+                #       (e, episode_reward_sum, agent.counter, t, h, m, s))
+                logging.info('Ep: %d score: %.2f memory: %d' %
+                             (e, episode_reward_sum, agent.counter))
                 break
-        # running_reward = running_reward * 0.99 + t * 0.01
+        running_reward = running_reward * 0.99 + t * 0.01
         # rewards.append(running_reward)
         # plot(rewards)
 
