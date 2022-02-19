@@ -19,6 +19,8 @@ import numpy as np
 # import gym
 import math, random
 import warnings
+
+from distlib.compat import raw_input
 from matplotlib import pyplot as plt
 from env_maze_dqn import Env
 from logger import Log

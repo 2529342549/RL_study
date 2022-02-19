@@ -1,10 +1,22 @@
 #!/usr/bin/env python
+# encoding: utf-8
+"""
+@author: HHD
+@license: (C) Copyright 2013-2017, Node Supply Chain Manager Corporation Limited. 
+@contact: 2529342549@qq.com
+@software: pycharm
+@file: env_ppo.py
+@time: 2022/2/18 下午7:32
+@desc:
+"""
+
 import math
 
 import numpy as np
 import time
 import tkinter as tk
 from PIL import ImageTk, Image
+import decimal as dm
 
 np.random.seed(1)
 PhotoImage = ImageTk.PhotoImage
@@ -24,6 +36,7 @@ class Env(tk.Tk):
         self.shapes = self.load_images()
         self.canvas = self._build_canvas()
         self.texts = []
+        self.steps = 1
         self.act = 0
 
     def start_env(self):
@@ -105,6 +118,7 @@ class Env(tk.Tk):
         # print(x, y)
         self.canvas.move(self.rectangle, UNIT / 2 - x + 300, UNIT / 2 - y + 300)
         self.render()
+        self.tot_reward = 0
         self.total_x = 0
         self.total_y = 0
         self.start_env()
@@ -120,8 +134,8 @@ class Env(tk.Tk):
 
     def get_state(self):
         data = np.ravel(self.migong, order='C')
-        res_state = np.array(self.coords_to_state(self.canvas.coords(self.rectangle)))
-        return res_state
+        # res_state = np.array(self.coords_to_state(self.canvas.coords(self.rectangle)))
+        return data
 
     def step(self, action):
         state = self.canvas.coords(self.rectangle)
@@ -169,26 +183,31 @@ class Env(tk.Tk):
         # reward function
         if next_state == self.canvas.coords(self.circle):
             reward = 10
+            self.tot_reward += 10
             done = True
         elif next_state in [self.canvas.coords(self.triangle1), self.canvas.coords(self.triangle2),
                             self.canvas.coords(self.triangle3), self.canvas.coords(self.triangle4),
                             self.canvas.coords(self.yellow_rectangle1), self.canvas.coords(self.yellow_rectangle2),
                             self.canvas.coords(self.yellow_rectangle3), self.canvas.coords(self.yellow_rectangle4)]:
             # print 'coll'
-            reward = -1.1
+            reward = -1
+            self.tot_reward -= dm.Decimal(1)
             done = True
         elif math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1]) == 1:
             reward = 0.1
+            self.tot_reward += self.tot_reward
             done = False
 
         elif next_state[0] in [15, 615] or next_state[1] in [15, 615]:
-            reward = -1.1
+            reward = -1
+            self.tot_reward -= dm.Decimal(1)
             done = True
         # print self.migong
         # reward = -10
         # done = True
         else:
-            reward = -0.1
+            reward = 0
+            # self.tot_reward -= dm.Decimal(0.1)
             done = False
 
         # next_state = self.coords_to_state(next_state)
@@ -196,4 +215,4 @@ class Env(tk.Tk):
         # state = self.coords_to_state(state)
         # print(state, next_state, [self.x1, self.y1])
         # print self.get_state()
-        return next_state, reward, done
+        return self.get_state(), reward, done

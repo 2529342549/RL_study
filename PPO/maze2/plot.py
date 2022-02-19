@@ -19,7 +19,7 @@ import pandas as pd
 sns.set()
 parser = argparse.ArgumentParser()
 # parser.add_argument('--log_files', type=str, default='../data/output.log')
-parser.add_argument('--window_size', type=int, default=50)
+parser.add_argument('--window_size', type=int, default=100)
 args = parser.parse_args()
 
 
