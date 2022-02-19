@@ -22,7 +22,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from distlib.compat import raw_input
 from matplotlib import pyplot as plt
 from torch.distributions import Normal, Categorical
 from torch.utils.data.sampler import BatchSampler, SubsetRandomSampler
@@ -53,15 +52,13 @@ Transition = namedtuple('Transition', ['state', 'action', 'a_log_prob', 'reward'
 class Actor(nn.Module):
     def __init__(self):
         super(Actor, self).__init__()
-        self.fc1 = nn.Linear(num_state, 512)
-        self.fc2 = nn.Linear(512, 256)
-        self.fc3 = nn.Linear(256, 64)
-        self.action_head = nn.Linear(64, num_action)
+        self.fc1 = nn.Linear(num_state, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.action_head = nn.Linear(256, num_action)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
         action_prob = F.softmax(self.action_head(x), dim=1)
         return action_prob
 
@@ -69,21 +66,19 @@ class Actor(nn.Module):
 class Critic(nn.Module):
     def __init__(self):
         super(Critic, self).__init__()
-        self.fc1 = nn.Linear(num_state, 512)
-        self.fc2 = nn.Linear(512, 256)
-        self.fc3 = nn.Linear(256, 64)
-        self.state_value = nn.Linear(64, 1)
+        self.fc1 = nn.Linear(num_state, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.state_value = nn.Linear(256, 1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
         value = self.state_value(x)
         return value
 
 
 class PPO(object):
-    clip_param = 0
+    clip_param = 0.2
     max_grad_norm = 0.5
     ppo_update_time = 30
     buffer_capacity = 10000
@@ -115,16 +110,10 @@ class PPO(object):
         state = torch.from_numpy(state).float().unsqueeze(0)
         with torch.no_grad():
             action_prob = self.actor_net(state)
-        # c = Categorical(action_prob)
-        # print(c)
-        # action = c.sample()
-        action_probs = action_prob.squeeze()
-        # action_probs = action_probs.tolist()
-        action_probs = np.array(action_probs)
-        action_probs /= sum(action_probs)
-        action = np.random.choice(num_action, p=action_probs)
+        c = Categorical(action_prob)
+        action = c.sample()
         # print(action_prob, action)
-        return action, action_prob[:, action].item()
+        return action.item(), action_prob[:, action.item()].item()
 
     def get_value(self, state):
         state = torch.from_numpy(state)
@@ -180,12 +169,9 @@ class PPO(object):
                 advantage = delta.detach()
                 # epoch iteration, PPO core!!!
                 action_prob = self.actor_net(state[index]).gather(1, action[index])  # new policy
-                # print(old_action_log_prob[index])
-                # action_prob=action_prob*action
-                # print(action_prob,old_action_log_prob)
-                ratio = (action_prob / old_action_log_prob[index])
-                # print(ratio)
-                # ratio = (action_prob - old_action_log_prob[index]).exp()
+
+                # ratio = (action_prob / old_action_log_prob[index])
+                ratio = (action_prob - old_action_log_prob[index]).exp()
                 surr1 = ratio * advantage
                 surr2 = torch.clamp(ratio, 1 - self.clip_param, 1 + self.clip_param) * advantage
 
@@ -208,6 +194,22 @@ class PPO(object):
                 self.training_step += 1
 
         del self.buffer[:]  # clear experience
+
+
+def plot(steps):
+    ax = plt.subplot(111)
+    ax.cla()
+    ax.grid()
+    ax.set_title('Training')
+    ax.set_xlabel('Episode')
+    ax.set_ylabel('Run time')
+    ax.plot(steps)
+    RunTime = len(steps)
+
+    # path = './AC_CartPole-v0/' + 'RunTime' + str(RunTime) + '.jpg'
+    # if len(steps) % 200 == 0:
+    #     plt.savefig(path)
+    plt.pause(0.0000001)
 
 
 def main():
@@ -259,9 +261,5 @@ def main():
 
 
 if __name__ == '__main__':
-    key = raw_input('Output directory already exists! Overwrite the folder? (y/n)')
-    if key == 'y':
-        with open(r'data/output.log', 'a+', ) as test:
-            test.truncate(0)
     main()
-    # print("end")
+    print("end")

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/DRL4SnakeGame" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/PPO/Maze_ppo" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/PPO/PPO-PyTorch" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/PPO/PPO-for-Beginners" vcs="Git" />

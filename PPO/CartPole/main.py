@@ -46,7 +46,7 @@ def main():
     for n_epi in range(10000):
         state = env.reset()
         done = False
-
+        # print(state)
         while not done:
             env.render()
             for t in range(T_horizon):
@@ -55,7 +55,7 @@ def main():
                 prob = model.pi(torch.from_numpy(state).float())
                 m = Categorical(prob)
                 action = m.sample().item()
-                # print(prob, action)
+                print(prob, action)
                 # 用最优action进行交互# noinspection PyTypeChecker
                 state_prime, r, done, info = env.step(action)
                 # print(r)

@@ -18,9 +18,10 @@ from keras import backend as K
 import os
 
 from keras.optimizer_v1 import RMSprop
-from tensorboardX import SummaryWriter
+# from tensorboard import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 
-# writer = SummaryWriter()
+writer = SummaryWriter()
 
 # 速度提升
 tf.compat.v1.disable_eager_execution()
@@ -39,7 +40,7 @@ if len(gpu) > 0:
         pass
 
 #############################################
-learning_rate = 0.01
+learning_rate = 0.001
 loss_clipping = 0.1
 entropy_loss = 0.05
 
@@ -99,6 +100,7 @@ class PPO_critic_FC_Network:
 
     def cri_loss(self, old_v):
         v = old_v
+
         def loss(y_true, y_pred):
             clipped = v + K.clip(y_pred - v, -loss_clipping, loss_clipping)
             value_loss_1 = (y_true - clipped) ** 2
@@ -198,13 +200,13 @@ class PPO_Agent:
         # print(action)
         action_onehot = np.zeros([self.action_size])
         action_onehot[action] = 1
-
+        print(action_model_predict,action)
         return action, action_onehot, action_model_predict
 
     def evaluate_get_act_(self, state):
         action_model_predict = self.act_model.Model.predict(state)[0]
         action = np.argmax(action_model_predict)
-
+        # print(action)
         return action
 
     # def writer_save(self):
@@ -217,19 +219,14 @@ class PPO_Agent:
         try:
             os.mkdir(actor)
             os.mkdir(critic)
-
         except:
             pass
-
         actor_loss = "./loss/_actor_loss.csv"
         critic_loss = "./loss/_critic_loss.csv"
-
         try:
             os.mkdir("./loss")
-
         except:
             pass
-
         self.act_model.Model.save_weights(filepath=actor, overwrite=True, save_format="tf")
         self.critic_model.Model.save_weights(filepath=critic, overwrite=True, save_format="tf")
 

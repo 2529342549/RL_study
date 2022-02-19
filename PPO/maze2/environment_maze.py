@@ -81,9 +81,12 @@ class Env(tk.Tk):
         return canvas
 
     def load_images(self):
-        rectangle = PhotoImage(Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/rectangle.png").resize((20, 20)))
-        triangle = PhotoImage(Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/triangle.png").resize((20, 20)))
-        circle = PhotoImage(Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/circle.png").resize((20, 20)))
+        rectangle = PhotoImage(
+            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/rectangle.png").resize((20, 20)))
+        triangle = PhotoImage(
+            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/triangle.png").resize((20, 20)))
+        circle = PhotoImage(
+            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/circle.png").resize((20, 20)))
         yellow_rectangle = PhotoImage(
             Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/YellowRectangle.png").resize((20, 20)))
         return rectangle, triangle, circle, yellow_rectangle
@@ -167,28 +170,25 @@ class Env(tk.Tk):
         np_circle = np.array(_circle)
         # print(_state, _circle)
         # reward function
+
         if next_state == self.canvas.coords(self.circle):
-            reward = 10
+            reward = 100
             done = True
         elif next_state in [self.canvas.coords(self.triangle1), self.canvas.coords(self.triangle2),
                             self.canvas.coords(self.triangle3), self.canvas.coords(self.triangle4),
                             self.canvas.coords(self.yellow_rectangle1), self.canvas.coords(self.yellow_rectangle2),
                             self.canvas.coords(self.yellow_rectangle3), self.canvas.coords(self.yellow_rectangle4)]:
             # print 'coll'
-            reward = -1.1
+            reward = -100
             done = True
         elif math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1]) == 1:
             reward = 0.1
             done = False
-
-        elif next_state[0] in [15, 615] or next_state[1] in [15, 615]:
-            reward = -1.1
+        elif _state[0] in [0, 20] or _state[1] in [0, 20]:
+            reward = -100
             done = True
-        # print self.migong
-        # reward = -10
-        # done = True
         else:
-            reward = -0.1
+            reward = -math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1])
             done = False
 
         # next_state = self.coords_to_state(next_state)
