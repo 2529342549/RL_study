@@ -39,12 +39,12 @@ class Env(tk.Tk):
 
     def _load_images(self):
 
-        character = tk.PhotoImage(file="sprite/character.png")
-        trap = tk.PhotoImage(file="sprite/box.png")
-        mark = tk.PhotoImage(file="sprite/mark.png")
-        block = tk.PhotoImage(file="sprite/block.png")
-        trap_with_character = tk.PhotoImage(file="sprite/box and mark.png")
-        mark_with_character = tk.PhotoImage(file="sprite/character and mark.png")
+        character = tk.PhotoImage(file="PPO/maze_ppo/sprite/character.png")
+        trap = tk.PhotoImage(file="PPO/maze_ppo/sprite/box.png")
+        mark = tk.PhotoImage(file="PPO/maze_ppo/sprite/mark.png")
+        block = tk.PhotoImage(file="PPO/maze_ppo/sprite/block.png")
+        trap_with_character = tk.PhotoImage(file="PPO/maze_ppo/sprite/box and mark.png")
+        mark_with_character = tk.PhotoImage(file="PPO/maze_ppo/sprite/character and mark.png")
 
         return block, character, mark, trap, trap_with_character, mark_with_character
 
