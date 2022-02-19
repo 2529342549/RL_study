@@ -19,7 +19,7 @@ import pandas as pd
 sns.set()
 parser = argparse.ArgumentParser()
 # parser.add_argument('--log_files', type=str, default='../data/output.log')
-parser.add_argument('--window_size', type=int, default=100)
+parser.add_argument('--window_size', type=int, default=50)
 args = parser.parse_args()
 
 
@@ -48,7 +48,7 @@ def main():
     ax4_legends = []
     ax4.plot(range(len(train_reward_smooth)), train_reward_smooth)
     # ax4_legends.append(models[i])
-    ax4_legends.append('d_distance')
+    ax4_legends.append('ppo')
     ax4.legend(ax4_legends, shadow=True, loc='best')
     # ax4.grid(True)
     ax4 = plt.gca()

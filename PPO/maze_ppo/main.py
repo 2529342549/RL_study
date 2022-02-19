@@ -28,7 +28,9 @@ class train_sys:
             self.Agent.count = 0
             dir = None
             train_count = 0
+            self.env.reset()
             while not done:
+                self.env.render()
                 action, action_one_hot, action_prob = self.Agent.get_act(self.state[np.newaxis])
                 if (action == 0):
                     dir = '←'
@@ -61,7 +63,7 @@ class train_sys:
 
             # print("Episode >> " +str(epi)+" reward("+str(self.env.tot_reward)+")")
 
-            self.env.reset()
+
 
     def evaluate(self):
         # print("log // evaluate model start")

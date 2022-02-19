@@ -172,31 +172,25 @@ class Env(tk.Tk):
         # reward function
 
         if next_state == self.canvas.coords(self.circle):
-            reward = 100
+            reward = 2
             done = True
         elif next_state in [self.canvas.coords(self.triangle1), self.canvas.coords(self.triangle2),
                             self.canvas.coords(self.triangle3), self.canvas.coords(self.triangle4),
                             self.canvas.coords(self.yellow_rectangle1), self.canvas.coords(self.yellow_rectangle2),
                             self.canvas.coords(self.yellow_rectangle3), self.canvas.coords(self.yellow_rectangle4)]:
-            # print 'coll'
-            reward = -20
+            reward = -1
             done = True
-        # elif math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1]) ==1:
-        #     reward = 0.1
-        #     done = False
+        elif math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1]) == 1:
+            reward = 0.01
+            done = False
         elif next_state[0] in [15, 615] or next_state[1] in [15, 615]:
-            reward = -20
+            reward = -1
             done = True
-        # print self.migong
-        # reward = -10
-        # done = True
         else:
-            reward = 1 / (math.exp(math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1]))) * 0.5
+            reward = 1 / (math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1]) * 10)
             done = False
 
         # next_state = self.coords_to_state(next_state)
         next_state = np.array(_state)
-        # state = self.coords_to_state(state)
-        # print(state, next_state, [self.x1, self.y1])
-        # print self.get_state()
+
         return next_state, reward, done

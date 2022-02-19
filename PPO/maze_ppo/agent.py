@@ -7,9 +7,10 @@ from keras import backend as K
 import os
 
 from keras.optimizer_v1 import RMSprop
-from tensorboardX import SummaryWriter
+# from tensorboardX import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
-writer = SummaryWriter()
+# writer = SummaryWriter()
 
 # 速度提升
 tf.compat.v1.disable_eager_execution()
@@ -149,7 +150,7 @@ class PPO_Agent:
         self.act_probs.append(act_prob)
         mask = 1 - done
         self.masks.append([mask])
-        writer.add_scalar('Data/reward', np.asarray([tot_reward], dtype='float32'), epi)
+        # writer.add_scalar('Data/reward', np.asarray([tot_reward], dtype='float32'), epi)
 
     def all_buffer_to_numpy(self):
 
@@ -184,20 +185,20 @@ class PPO_Agent:
         batch = self.s.shape[0]
         y_true = np.hstack([self.advantages, self.act_probs, self.a])
         # print(" train log >> actor start")
-        act_his = self.act_model.Model.fit(self.s, y_true, epochs=epoch, batch_size=batch, verbose=1)
+        # act_his = self.act_model.Model.fit(self.s, y_true, epochs=epoch, batch_size=batch, verbose=1)
         # print(" train log >> actor clear")
 
         # print(" train log >> critic start")
-        cri_his = self.critic_model.Model.fit([self.s, self.v], self.target, epochs=epoch, verbose=1, batch_size=batch)
+        # cri_his = self.critic_model.Model.fit([self.s, self.v], self.target, epochs=epoch, verbose=1, batch_size=batch)
         # print(" train log >> critic clear")
-        writer.add_scalar('Data/actor_loss', np.sum(act_his.history['loss']), self.train_count)
-        writer.add_scalar('Data/critic_loss', np.sum(cri_his.history['loss']), self.train_count)
+        # writer.add_scalar('Data/actor_loss', np.sum(act_his.history['loss']), self.train_count)
+        # writer.add_scalar('Data/critic_loss', np.sum(cri_his.history['loss']), self.train_count)
         self.train_count += 1
         self.reset_buffer()
 
     def get_act(self, state):
         action_model_predict = self.act_model.Model.predict(state)[0]
-        print(action_model_predict)
+        # print(action_model_predict)
         # print(self.action_size)
         action = np.random.choice(self.action_size, p=action_model_predict)
         # print(action)
@@ -212,9 +213,8 @@ class PPO_Agent:
 
         return action
 
-    def writer_save(self):
-
-        writer.close()
+    # def writer_save(self):
+    #     writer.close()
 
     def save_model(self):
 

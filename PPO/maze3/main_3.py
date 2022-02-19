@@ -48,7 +48,7 @@ def main():
                 state_prime, r, done = env.step(action)
                 # print(r)
                 # 存储交互数据，等待训练
-                model.put_data((state, action, r, state_prime, prob[action].item(), done))
+                model.put_data((state, action, r , state_prime, prob[action].item(), done))
                 state = state_prime
 
                 score += r
@@ -62,7 +62,7 @@ def main():
             model.train_net()
         score = score * 0.99 + t * 0.01
         logging.info("# of episode :{}, avg score : {:.1f}".format(n_epi, score))
-        score = 0.0
+        score = 0
 
     # env.close()
 
@@ -72,4 +72,5 @@ if __name__ == '__main__':
     if key == 'y':
         with open(r'data/output.log', 'a+', ) as test:
             test.truncate(0)
+
     main()

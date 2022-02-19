@@ -6,7 +6,7 @@ import decimal as dm
 
 class Env(tk.Tk):
 
-    def __init__(self, render_speed=0, width=10, height=10):
+    def __init__(self, render_speed=0.003, width=10, height=10):
 
         super(Env, self).__init__()
         self.render_speed = render_speed
@@ -38,13 +38,12 @@ class Env(tk.Tk):
         self.canvas = self._build_canvas()
 
     def _load_images(self):
-
-        character = tk.PhotoImage(file="PPO/maze_ppo/sprite/character.png")
-        trap = tk.PhotoImage(file="PPO/maze_ppo/sprite/box.png")
-        mark = tk.PhotoImage(file="PPO/maze_ppo/sprite/mark.png")
-        block = tk.PhotoImage(file="PPO/maze_ppo/sprite/block.png")
-        trap_with_character = tk.PhotoImage(file="PPO/maze_ppo/sprite/box and mark.png")
-        mark_with_character = tk.PhotoImage(file="PPO/maze_ppo/sprite/character and mark.png")
+        character = tk.PhotoImage(file="/home/hhd/PycharmProjects/RL_study_/PPO/maze_ppo/sprite/character.png")
+        trap = tk.PhotoImage(file="/home/hhd/PycharmProjects/RL_study_/PPO/maze_ppo/sprite/box.png")
+        mark = tk.PhotoImage(file="/home/hhd/PycharmProjects/RL_study_/PPO/maze_ppo/sprite/mark.png")
+        block = tk.PhotoImage(file="/home/hhd/PycharmProjects/RL_study_/PPO/maze_ppo/sprite/block.png")
+        trap_with_character = tk.PhotoImage(file="/home/hhd/PycharmProjects/RL_study_/PPO/maze_ppo/sprite/box and mark.png")
+        mark_with_character = tk.PhotoImage(file="/home/hhd/PycharmProjects/RL_study_/PPO/maze_ppo/sprite/character and mark.png")
 
         return block, character, mark, trap, trap_with_character, mark_with_character
 
@@ -84,6 +83,7 @@ class Env(tk.Tk):
         return canvas
 
     def reset(self):
+        self.update()
         self.steps = 1
         self.tot_reward = 0
         self.action_space = [0, 1, 2, 3]
@@ -162,6 +162,7 @@ class Env(tk.Tk):
         elif self.game_board[after_y][after_x] == 1:
             self.tot_reward -= dm.Decimal(1.1)
             self.reward = -1.1
+            return True
 
         else:
             self.game_board[after_y][after_x] = 2
@@ -178,7 +179,7 @@ class Env(tk.Tk):
 
             self.before_player_loc = [before_x, before_y]
 
-        return False
+            return False
 
     def get_state(self):
         data = np.ravel(self.game_board, order='C')

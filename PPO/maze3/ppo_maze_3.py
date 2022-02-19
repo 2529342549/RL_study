@@ -16,11 +16,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 # Hyperparameters
-learning_rate = 0.0005  # 学习率
-gamma = 0.98  #
+learning_rate = 0.001  # 学习率
+gamma = 0.9  #
 lmbda = 0.95
-eps_clip = 0.1
-K_epoch = 3
+eps_clip = 0.2
+K_epoch = 2
 T_horizon = 20
 
 
@@ -110,7 +110,7 @@ class PPO(nn.Module):
             surr2 = torch.clamp(ratio, 1 - eps_clip, 1 + eps_clip) * advantage
             # 这里简化ppo，把policy loss和value loss放在一起计算
             loss = -torch.min(surr1, surr2) + F.smooth_l1_loss(self.v(state), td_target.detach())
-
+            # print(loss)
             # 梯度优化
             self.optimizer.zero_grad()
             loss.mean().backward()

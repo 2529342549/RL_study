@@ -61,6 +61,7 @@ class Painter:
         sns.set_theme(style=style)
         sns.set_style(rc={"linewidth": 1})
         print("==正在绘图...")
+        # print(self.data)
         sns.relplot(data = self.data, kind = "line", x = "episode", y = "episode reward",
                     hue= "Method", hue_order=None)
         plt.title(self.title,fontsize = 12)
@@ -124,6 +125,6 @@ class Painter:
 
 
 if __name__ == "__main__":
-    painter = Painter(load_csv=True, load_dir='reward.csv')
+    painter = Painter(load_csv=True, load_dir='reward1.csv')
     painter.drawFigure(style="whitegrid")
 

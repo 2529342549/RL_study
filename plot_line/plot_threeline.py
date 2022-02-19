@@ -63,7 +63,7 @@ def main():
         train_cr = train_cr[:max_episodes]
         train_time = train_time[:max_episodes]
         train_reward = train_reward[:max_episodes]
-
+        print(type(train_reward))
         # smooth training plot
         train_sr_smooth = running_mean(train_sr, args.window_size)
         train_cr_smooth = running_mean(train_cr, args.window_size)
