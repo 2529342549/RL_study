@@ -50,7 +50,7 @@ class Painter:
 
     def addData(self, dataSeries, method, x=None, smooth=True):
         if smooth:
-            dataSeries = running_mean(dataSeries, 500)
+            dataSeries = running_mean(dataSeries, 200)
         size = len(dataSeries)
         if x is not None:
             if len(x) != size:
@@ -73,7 +73,7 @@ class Painter:
         sns.set_style(rc={"linewidth": 1})
         print("==正在绘图...")
         # print(self.data)
-        sns.relplot(data=self.data, kind="line", x="episode", y="episode reward", hue="Method",height=5, aspect=1.3, hue_order=None)
+        sns.relplot(data=self.data, kind="line", x="episode", y="episode reward", hue="Method", height=5, aspect=1.3, hue_order=None)
         # plt.figure(figsize=(15, 15))
 
         plt.title(self.title, fontsize=12)
@@ -97,5 +97,5 @@ class Painter:
         print("==已删除{}下对应数据!".format(delete_data_name))
 
 # if __name__ == "__main__":
-#     painter = Painter(load_csv=True, load_dir='data/reward.csv')
+#     painter = Painter(load_csv=True, load_dir='/home/hhd/PycharmProjects/RL_study_/plot_line/data/reward.csv')
 #     painter.drawFigure(style="whitegrid")

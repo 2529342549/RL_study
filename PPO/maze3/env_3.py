@@ -82,13 +82,13 @@ class Env(tk.Tk):
 
     def load_images(self):
         rectangle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/rectangle.png").resize((20, 20)))
+            Image.open("/qlearning/img/rectangle.png").resize((20, 20)))
         triangle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/triangle.png").resize((20, 20)))
+            Image.open("/qlearning/img/triangle.png").resize((20, 20)))
         circle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/circle.png").resize((20, 20)))
+            Image.open("/qlearning/img/circle.png").resize((20, 20)))
         yellow_rectangle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/YellowRectangle.png").resize((20, 20)))
+            Image.open("/qlearning/img/YellowRectangle.png").resize((20, 20)))
         return rectangle, triangle, circle, yellow_rectangle
 
     def coords_to_state(self, coords):
@@ -172,7 +172,7 @@ class Env(tk.Tk):
         # reward function
 
         if next_state == self.canvas.coords(self.circle):
-            reward = 2
+            reward = 5
             done = True
         elif next_state in [self.canvas.coords(self.triangle1), self.canvas.coords(self.triangle2),
                             self.canvas.coords(self.triangle3), self.canvas.coords(self.triangle4),
@@ -187,7 +187,7 @@ class Env(tk.Tk):
             reward = -1
             done = True
         else:
-            reward = 1 / (math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1]) * 10)
+            reward = 0
             done = False
 
         # next_state = self.coords_to_state(next_state)

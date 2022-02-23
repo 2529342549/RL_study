@@ -20,7 +20,7 @@ learning_rate = 0.001  # 学习率
 gamma = 0.9  #
 lmbda = 0.95
 eps_clip = 0.2
-K_epoch = 2
+K_epoch = 10
 T_horizon = 20
 
 
@@ -30,9 +30,9 @@ class PPO(nn.Module):
         super(PPO, self).__init__()
         self.data = []  # 用来存储交互数据
 
-        self.fc1 = nn.Linear(2, 256)  # 由于倒立摆环境简单，这里仅用一个线性变换来训练数据
-        self.fc_pi = nn.Linear(256, 4)  # policy函数（输出action）的全连接层
-        self.fc_v = nn.Linear(256, 1)  # value函数（输出v）的全连接层
+        self.fc1 = nn.Linear(2, 128)  # 由于倒立摆环境简单，这里仅用一个线性变换来训练数据
+        self.fc_pi = nn.Linear(128, 4)  # policy函数（输出action）的全连接层
+        self.fc_v = nn.Linear(128, 1)  # value函数（输出v）的全连接层
         self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)  # 优化器
 
     # policy函数

@@ -2,21 +2,26 @@
 
 import numpy as np
 import random
-from collections import defaultdict
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from testenv import Env
+from Logger_info.logger import Log
+from collections import defaultdict
+from distlib.compat import raw_input
+
+logging = Log(log_file='data/output.log').getlog()
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 
 class QLearningAgent:
     def __init__(self, actions):
         # actions = [0, 1, 2, 3]
         self.actions = actions
-        self.learning_rate = 0.05
+        self.learning_rate = 0.001
         self.discount_factor = 0.9
-        self.epsilon = 0.1
+        self.epsilon = 1
+        self.epsilon_min = 0.01
         self.q_table = defaultdict(lambda: [0.0, 0.0, 0.0, 0.0])
 
     # update q function with sample <s, a, r, s'>
@@ -36,7 +41,10 @@ class QLearningAgent:
         else:
             # take action according to the q function table
             state_action = self.q_table[state]
+            # print(state_action)
             action = self.arg_max(state_action)
+            # print(action)
+
         return action
 
     @staticmethod
@@ -54,9 +62,13 @@ class QLearningAgent:
 
 
 if __name__ == "__main__":
+    key = raw_input('Output directory already exists! Overwrite the folder? (y/n)')
+    if key == 'y':
+        with open(r'data/output.log', 'a+', ) as test:
+            test.truncate(0)
     env = Env()
     agent = QLearningAgent(actions=list(range(env.n_actions)))
-    for episode in range(1000):
+    for episode in range(10000):
         total_reward = 0
         state = env.reset()
         # print(state)
@@ -69,6 +81,7 @@ if __name__ == "__main__":
             # print(next_state)
             total_reward += reward
             # with sample <s,a,r,s'>, agent learns new q function
+            # print(state,next_state)
             agent.learn(str(state), action, reward, str(next_state))
             # print('state:',type(state),' action:',type(action))
             state = next_state
@@ -76,5 +89,7 @@ if __name__ == "__main__":
             # if episode ends, then break
             if done:
                 break
+            if agent.epsilon > agent.epsilon_min:
+                agent.epsilon = agent.epsilon - 0.0001
 
-        print("episode:{},total reward:{}".format(episode, total_reward))
+        logging.info("episode:{},total reward:{},epsilon:{}".format(episode, total_reward, agent.epsilon))

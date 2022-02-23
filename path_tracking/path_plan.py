@@ -225,7 +225,7 @@ if __name__ == '__main__':
         print('path plan success')
         if is_plot:
             px, py = [K[0] for K in path_], [K[1] for K in path_]  # 路径点x坐标列表, y坐标列表
-            subplot.plot([K[0] for K in path_],[K[1] for K in path_], 0.1, 'xk')
+            subplot.plot([K[0] for K in path_], [K[1] for K in path_], 0.1, 'xk')
             plt.show()
     else:
         print('path plan failed')

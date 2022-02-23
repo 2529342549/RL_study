@@ -37,31 +37,31 @@ def main():
         # print(state)
         while not done:
             env.render()
-            for t in range(T_horizon):
-                # 由当前policy模型输出最优action
-                # print(type(state), state)
-                prob = model.pi(torch.from_numpy(state).float())
-                m = Categorical(prob)
-                action = m.sample().item()
-                # print(prob, action)
-                # 用最优action进行交互# noinspection PyTypeChecker
-                state_prime, r, done = env.step(action)
-                # print(r)
-                # 存储交互数据，等待训练
-                model.put_data((state, action, r , state_prime, prob[action].item(), done))
-                state = state_prime
+            # print(state)
+            # 由当前policy模型输出最优action
+            # print(type(state), state)
+            prob = model.pi(torch.from_numpy(state).float())
+            m = Categorical(prob)
+            action = m.sample().item()
+            print(prob, action)
+            # 用最优action进行交互# noinspection PyTypeChecker
+            state_prime, r, done = env.step(action)
+            # print(r)
+            # 存储交互数据，等待训练
+            model.put_data((state, action, r, state_prime, prob[action].item(), done))
+            state = state_prime
 
-                score += r
-                if done:
-                    break
+            score += r
+            if done:
+                break
             # print(score)
             # running_rewards = running_rewards * 0.99 + t * 0.01
             # rewards.append(running_rewards)
             # plot(rewards)
             # 模型训练
             model.train_net()
-        score = score * 0.99 + t * 0.01
-        logging.info("# of episode :{}, avg score : {:.1f}".format(n_epi, score))
+        # score = score * 0.99 + t * 0.01
+        # logging.info("# of episode :{}, avg score : {:.1f}".format(n_epi, score))
         score = 0
 
     # env.close()

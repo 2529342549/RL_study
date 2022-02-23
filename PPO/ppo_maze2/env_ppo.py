@@ -94,11 +94,11 @@ class Env(tk.Tk):
         return canvas
 
     def load_images(self):
-        rectangle = PhotoImage(Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/rectangle.png").resize((20, 20)))
-        triangle = PhotoImage(Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/triangle.png").resize((20, 20)))
-        circle = PhotoImage(Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/circle.png").resize((20, 20)))
+        rectangle = PhotoImage(Image.open("/qlearning/img/rectangle.png").resize((20, 20)))
+        triangle = PhotoImage(Image.open("/qlearning/img/triangle.png").resize((20, 20)))
+        circle = PhotoImage(Image.open("/qlearning/img/circle.png").resize((20, 20)))
         yellow_rectangle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/YellowRectangle.png").resize((20, 20)))
+            Image.open("/qlearning/img/YellowRectangle.png").resize((20, 20)))
         return rectangle, triangle, circle, yellow_rectangle
 
     def coords_to_state(self, coords):

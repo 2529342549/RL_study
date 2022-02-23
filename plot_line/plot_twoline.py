@@ -32,14 +32,13 @@ def main():
     ax3_legends = []
     ax4_legends = []
 
-
     for _, log_file in enumerate(args.log_files):
         with open(log_file, 'r') as file:
             log = file.read()
 
         new_train_pattern = r"TRAIN_new in episode (?P<episode>\d+) has success rate: (?P<sr>[0-1].\d+), " \
-                        r"collision rate: (?P<cr>[0-1].\d+), nav time: (?P<time>\d+.\d+), " \
-                        r"total reward: (?P<reward>[-+]?\d+.\d+)"
+                            r"collision rate: (?P<cr>[0-1].\d+), nav time: (?P<time>\d+.\d+), " \
+                            r"total reward: (?P<reward>[-+]?\d+.\d+)"
         new_train_episode = []
         new_train_sr = []
         new_train_cr = []
@@ -61,7 +60,6 @@ def main():
         new_train_cr_smooth = running_mean(new_train_cr, args.window_size)
         new_train_time_smooth = running_mean(new_train_time, args.window_size)
         new_train_reward_smooth = running_mean(new_train_reward, args.window_size)
-
 
         train_pattern = r"TRAIN in episode (?P<episode>\d+) has success rate: (?P<sr>[0-1].\d+), " \
                         r"collision rate: (?P<cr>[0-1].\d+), nav time: (?P<time>\d+.\d+), " \
@@ -97,10 +95,10 @@ def main():
                 ax1.plot(range(len(train_sr_smooth)), train_sr_smooth)
                 ax1_legends.append('d_distance')
             if args.plot_new_train:
-                ax1.plot(range(len(new_train_sr_smooth)), new_train_sr_smooth,'-r')
+                ax1.plot(range(len(new_train_sr_smooth)), new_train_sr_smooth, '-r')
                 ax1_legends.append('d_factor')
 
-            ax1.legend(ax1_legends,shadow=True,loc='best')
+            ax1.legend(ax1_legends, shadow=True, loc='best')
             ax1.spines['top'].set_visible(False)  # 去掉上边框
             ax1.spines['right'].set_visible(False)  # 去掉右边框
             ax1.set_xlabel('Episodes')
@@ -115,10 +113,10 @@ def main():
                 ax2.plot(range(len(train_time_smooth)), train_time_smooth)
                 ax2_legends.append('d_distance')
             if args.plot_new_train:
-                ax2.plot(range(len(new_train_time_smooth)), new_train_time_smooth,'-r')
+                ax2.plot(range(len(new_train_time_smooth)), new_train_time_smooth, '-r')
                 ax2_legends.append('d_factor')
 
-            ax2.legend(ax2_legends,shadow=True,loc='best')
+            ax2.legend(ax2_legends, shadow=True, loc='best')
             ax2.spines['top'].set_visible(False)  # 去掉上边框
             ax2.spines['right'].set_visible(False)  # 去掉右边框
             ax2.set_xlabel('Episodes')
@@ -133,10 +131,10 @@ def main():
                 ax3.plot(range(len(train_cr_smooth)), train_cr_smooth)
                 ax3_legends.append('d_distance')
             if args.plot_new_train:
-                ax3.plot(range(len(new_train_cr_smooth)), new_train_cr_smooth,'-r')
+                ax3.plot(range(len(new_train_cr_smooth)), new_train_cr_smooth, '-r')
                 ax3_legends.append('d_factor')
 
-            ax3.legend(ax3_legends,shadow=True,loc='best')
+            ax3.legend(ax3_legends, shadow=True, loc='best')
             ax3.spines['top'].set_visible(False)  # 去掉上边框
             ax3.spines['right'].set_visible(False)  # 去掉右边框
             ax3.set_xlabel('Episodes')
@@ -153,15 +151,15 @@ def main():
                 ax4_legends.append('d_distance')
 
             if args.plot_new_train:
-                ax4.plot(range(len(new_train_reward_smooth)), new_train_reward_smooth,'-r')
+                ax4.plot(range(len(new_train_reward_smooth)), new_train_reward_smooth, '-r')
                 ax4_legends.append('d_factor')
 
-            ax4.legend(ax4_legends,shadow=True,loc='best')
+            ax4.legend(ax4_legends, shadow=True, loc='best')
             # ax4.grid(True)
             ax4 = plt.gca()
             # ax4.patch.set_facecolor('xkcd:mint green')
-            ax4.spines['top'].set_visible(False) #去掉上边框
-            ax4.spines['right'].set_visible(False) #去掉右边框
+            ax4.spines['top'].set_visible(False)  # 去掉上边框
+            ax4.spines['right'].set_visible(False)  # 去掉右边框
             # ax4.patch.set_facecolor("green")
             ax4.patch.set_alpha(0.5)
             ax4.set_xlabel('Episodes')

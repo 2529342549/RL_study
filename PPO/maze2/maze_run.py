@@ -34,7 +34,7 @@ from logger import Log
 from environment_maze import Env
 
 logging = Log(__name__).getlog()
-gamma = 0.99
+gamma = 0.95
 render = False
 seed = 1
 log_interval = 10
@@ -53,8 +53,11 @@ class Actor(nn.Module):
     def __init__(self):
         super(Actor, self).__init__()
         self.fc1 = nn.Linear(num_state, 256)
+        self.fc1.weight.data.normal_(0, 0.1)  # 权重初始化 (均值为0，方差为0.1的正态分布)
         self.fc2 = nn.Linear(256, 256)
+        self.fc2.weight.data.normal_(0, 0.1)
         self.action_head = nn.Linear(256, num_action)
+        self.action_head.weight.data.normal_(0, 0.1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -67,8 +70,11 @@ class Critic(nn.Module):
     def __init__(self):
         super(Critic, self).__init__()
         self.fc1 = nn.Linear(num_state, 256)
+        self.fc1.weight.data.normal_(0, 0.1)
         self.fc2 = nn.Linear(256, 256)
+        self.fc2.weight.data.normal_(0, 0.1)
         self.state_value = nn.Linear(256, 1)
+        self.state_value.weight.data.normal_(0, 0.1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -196,22 +202,6 @@ class PPO(object):
         del self.buffer[:]  # clear experience
 
 
-def plot(steps):
-    ax = plt.subplot(111)
-    ax.cla()
-    ax.grid()
-    ax.set_title('Training')
-    ax.set_xlabel('Episode')
-    ax.set_ylabel('Run time')
-    ax.plot(steps)
-    RunTime = len(steps)
-
-    # path = './AC_CartPole-v0/' + 'RunTime' + str(RunTime) + '.jpg'
-    # if len(steps) % 200 == 0:
-    #     plt.savefig(path)
-    plt.pause(0.0000001)
-
-
 def main():
     agent = PPO()
     running_reward = 10
@@ -247,13 +237,10 @@ def main():
                 done = True
 
             if done:
-                m, s = divmod(int(time.time() - start_time), 60)
-                h, m = divmod(m, 60)
                 agent.update(e)
                 # print('Ep: %d score: %.2f memory: %d episode_step: %d time: %d:%02d:%02d' %
                 #       (e, episode_reward_sum, agent.counter, t, h, m, s))
-                logging.info('Ep: %d score: %.2f memory: %d' %
-                             (e, episode_reward_sum, agent.counter))
+                logging.info('Ep: %d score: %.2f memory: %d' % (e, episode_reward_sum, agent.counter))
                 break
         running_reward = running_reward * 0.99 + t * 0.01
         # rewards.append(running_reward)

@@ -82,13 +82,13 @@ class Env(tk.Tk):
 
     def load_images(self):
         rectangle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/rectangle.png").resize((20, 20)))
+            Image.open("/qlearning/img/rectangle.png").resize((20, 20)))
         triangle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/triangle.png").resize((20, 20)))
+            Image.open("/qlearning/img/triangle.png").resize((20, 20)))
         circle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/circle.png").resize((20, 20)))
+            Image.open("/qlearning/img/circle.png").resize((20, 20)))
         yellow_rectangle = PhotoImage(
-            Image.open("/home/hhd/PycharmProjects/RL_study_/Qlearning_maze/img/YellowRectangle.png").resize((20, 20)))
+            Image.open("/qlearning/img/YellowRectangle.png").resize((20, 20)))
         return rectangle, triangle, circle, yellow_rectangle
 
     def coords_to_state(self, coords):
@@ -188,7 +188,8 @@ class Env(tk.Tk):
             reward = -100
             done = True
         else:
-            reward = -math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1])
+            reward = 0
+            # reward = -abs(math.hypot((np_circle - np_state)[0], (np_circle - np_state)[1])) * 0.01
             done = False
 
         # next_state = self.coords_to_state(next_state)

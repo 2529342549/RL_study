@@ -18,8 +18,8 @@ import pandas as pd
 
 sns.set()
 parser = argparse.ArgumentParser()
-# parser.add_argument('--log_files', type=str, default='../data/output.log')
-parser.add_argument('--window_size', type=int, default=500)
+parser.add_argument('log_files', type=str, nargs='+')
+parser.add_argument('--window_size', type=int, default=100)
 args = parser.parse_args()
 
 
@@ -31,15 +31,16 @@ def running_mean(x, n):
 def main():
     # define the names of the models you want to plot and the longest episodes you want to show
     max_episodes = 6000
-    log_file = '/home/hhd/PycharmProjects/RL_study_/dqn/maze/data/output.log'
-    with open(log_file, 'r') as file:
+    log_file = args.log_files
+    # print(log_file)
+    with open(log_file[0], 'r') as file:
         log = file.read()
-
-    train_pattern = r"Ep: (.*) score: (.*) memory: (.*) epsilon: (.*)"
+    train_pattern = r"episode:(.*),total reward:(.*),epsilon:(.*)"
     train_reward = []
+    # print(train_pattern)
     for r in re.findall(train_pattern, log):
         train_reward.append(float(r[1]))
-
+    # print(train_reward)
     train_reward = train_reward[:max_episodes]
     # print train_reward
     train_reward_smooth = running_mean(train_reward, args.window_size)
@@ -48,7 +49,7 @@ def main():
     ax4_legends = []
     ax4.plot(range(len(train_reward_smooth)), train_reward_smooth)
     # ax4_legends.append(models[i])
-    ax4_legends.append('d_distance')
+    ax4_legends.append('qlearning')
     ax4.legend(ax4_legends, shadow=True, loc='best')
     # ax4.grid(True)
     ax4 = plt.gca()

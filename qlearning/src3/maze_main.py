@@ -5,8 +5,8 @@
 # @File    : maze_main.py
 # @Software: PyCharm
 import gym
-from maze3_Qlearning.src3.maze_env import FrozenLakeWapper
-from maze3_Qlearning.src3.maze_agent import Qlearning
+from maze_env import FrozenLakeWapper
+from maze_agent import Qlearning
 
 
 def run_episode(env, agent):
