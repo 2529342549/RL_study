@@ -14,13 +14,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-
 # Hyperparameters
-learning_rate = 0.001  # 学习率
+learning_rate = 0.0001  # 学习率
 gamma = 0.9  #
 lmbda = 0.95
 eps_clip = 0.2
-K_epoch = 10
+K_epoch = 5
 T_horizon = 20
 
 
@@ -30,9 +29,9 @@ class PPO(nn.Module):
         super(PPO, self).__init__()
         self.data = []  # 用来存储交互数据
 
-        self.fc1 = nn.Linear(2, 128)  # 由于倒立摆环境简单，这里仅用一个线性变换来训练数据
-        self.fc_pi = nn.Linear(128, 4)  # policy函数（输出action）的全连接层
-        self.fc_v = nn.Linear(128, 1)  # value函数（输出v）的全连接层
+        self.fc1 = nn.Linear(2, 10)  # 由于倒立摆环境简单，这里仅用一个线性变换来训练数据
+        self.fc_pi = nn.Linear(10, 4)  # policy函数（输出action）的全连接层
+        self.fc_v = nn.Linear(10, 1)  # value函数（输出v）的全连接层
         self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)  # 优化器
 
     # policy函数
@@ -100,7 +99,7 @@ class PPO(nn.Module):
             advantage_lst.reverse()
             advantage = torch.tensor(advantage_lst, dtype=torch.float)
 
-            # 计算ratio 防止单词更新偏离太多
+            # 计算ratio 防止单次更新偏离太多
             pi = self.pi(state, softmax_dim=1)
             pi_a = pi.gather(1, action)
             ratio = torch.exp(torch.log(pi_a) - torch.log(prob_a))  # a/b == exp(log(a)-log(b))

@@ -22,7 +22,7 @@ class Log(object):
         self.logger = logging.getLogger(logger)
         self.logger.setLevel(logging.INFO)
         # 创建一个handler，用于写入日志文件
-        self.log_name = './data/output.log'
+        self.log_name = './data/output1.log'
         fh = logging.FileHandler(self.log_name, mode='a')  # 追加模式 这个是python2的
         # fh = logging.FileHandler(self.log_name, 'a', encoding='utf-8') # 这个是python3的
         fh.setLevel(logging.INFO)

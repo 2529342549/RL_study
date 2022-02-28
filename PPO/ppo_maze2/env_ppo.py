@@ -31,7 +31,7 @@ class Env(tk.Tk):
         tk.Tk.__init__(self)
         self.action_space = ['u', 'd', 'l', 'r']
         self.n_actions = len(self.action_space)
-        self.title('Q Learning')
+        self.title('PPO for Maze')
         self.geometry('{0}x{1}'.format(HEIGHT * UNIT, HEIGHT * UNIT))
         self.shapes = self.load_images()
         self.canvas = self._build_canvas()

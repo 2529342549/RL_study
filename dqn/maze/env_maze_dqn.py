@@ -51,8 +51,6 @@ class Env(tk.Tk):
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
         self.x1, self.y1 = 10, 10
-        # print(self.migong[self.x1][self.y1])
-        self.end_game = 0
         return self.migong
 
     def _build_canvas(self):
@@ -66,16 +64,15 @@ class Env(tk.Tk):
             canvas.create_line(x0, y0, x1, y1)
 
         # add img to canvas
-
         self.circle = canvas.create_image(165, 165, image=self.shapes[2])
         # print self.circle
-        self.rectangle = canvas.create_image(285, 285, image=self.shapes[0])
+        self.rectangle = canvas.create_image(315, 315, image=self.shapes[0])
         self.triangle1 = canvas.create_image(195, 195, image=self.shapes[1])
         self.triangle2 = canvas.create_image(195, 435, image=self.shapes[1])
         self.triangle3 = canvas.create_image(435, 195, image=self.shapes[1])
         self.triangle4 = canvas.create_image(435, 435, image=self.shapes[1])
-        self.triangle5 = canvas.create_image(255, 315, image=self.shapes[1])
-        self.triangle6 = canvas.create_image(225, 315, image=self.shapes[1])
+        self.triangle5 = canvas.create_image(255, 345, image=self.shapes[1])
+        self.triangle6 = canvas.create_image(225, 345, image=self.shapes[1])
         self.triangle7 = canvas.create_image(345, 225, image=self.shapes[1])
         self.triangle8 = canvas.create_image(345, 255, image=self.shapes[1])
 
@@ -85,11 +82,11 @@ class Env(tk.Tk):
         return canvas
 
     def load_images(self):
-        rectangle = PhotoImage(Image.open("/qlearning/img/rectangle.png").resize((20, 20)))
-        triangle = PhotoImage(Image.open("/qlearning/img/triangle.png").resize((20, 20)))
-        circle = PhotoImage(Image.open("/qlearning/img/circle.png").resize((20, 20)))
+        rectangle = PhotoImage(Image.open("../../data/img/rectangle.png").resize((20, 20)))
+        triangle = PhotoImage(Image.open("../../data/img/triangle.png").resize((20, 20)))
+        circle = PhotoImage(Image.open("../../data/img/circle.png").resize((20, 20)))
         yellow_rectangle = PhotoImage(
-            Image.open("/qlearning/img/YellowRectangle.png").resize((20, 20)))
+            Image.open("../../data/img/YellowRectangle.png").resize((20, 20)))
         return rectangle, triangle, circle, yellow_rectangle
 
     def coords_to_state(self, coords):
@@ -118,7 +115,7 @@ class Env(tk.Tk):
         return res_state
 
     def render(self):
-        time.sleep(0.03)
+        time.sleep(0.003)
         self.update()
 
     def get_state(self):
@@ -134,27 +131,19 @@ class Env(tk.Tk):
         if action == 0:  # up
             if state[1] > UNIT:
                 base_action[1] -= UNIT
-                self.migong[self.x1][self.y1] = 0
-                self.migong[self.x1][self.y1 - 1] = 1
                 self.y1 -= 1
         elif action == 1:  # down
             if state[1] < (HEIGHT - 1) * UNIT:
                 base_action[1] += UNIT
-                self.migong[self.x1][self.y1] = 0
-                self.migong[self.x1][self.y1 + 1] = 1
                 self.y1 += 1
         elif action == 2:  # left
             if state[0] > UNIT:
                 base_action[0] -= UNIT
-                self.migong[self.x1][self.y1] = 0
-                self.migong[self.x1 - 1][self.y1] = 1
                 self.x1 -= 1
 
         elif action == 3:  # right
             if state[0] < (WIDTH - 1) * UNIT:
                 base_action[0] += UNIT
-                self.migong[self.x1][self.y1] = 0
-                self.migong[self.x1 + 1][self.y1] = 1
                 self.x1 += 1
 
         # move agent
@@ -166,15 +155,11 @@ class Env(tk.Tk):
         _state = self.coords_to_state(next_state)
         # print(_state)
 
-        _circle = self.coords_to_state(self.canvas.coords(self.circle))
         # reward function
-        if next_state == self.canvas.coords(self.circle):
+        if self.migong[_state[0]][_state[1]] == 2:
             reward = 10
             done = True
-        elif next_state in [self.canvas.coords(self.triangle1), self.canvas.coords(self.triangle2), self.canvas.coords(self.triangle3),
-                            self.canvas.coords(self.triangle4), self.canvas.coords(self.triangle5), self.canvas.coords(self.triangle6),
-                            self.canvas.coords(self.triangle7), self.canvas.coords(self.triangle8)]:
-            # print 'coll'
+        elif self.migong[_state[0]][_state[1]] == 3:
             reward = -9
             done = True
         elif _state[0] in [0, 20] or _state[1] in [0, 20]:
@@ -184,9 +169,4 @@ class Env(tk.Tk):
             reward = -0.1
             done = False
 
-        # next_state = self.coords_to_state(next_state)
-        next_state = np.array(self.coords_to_state(next_state))
-        # state = self.coords_to_state(state)
-        # print(state, next_state, [self.x1, self.y1])
-        # print self.get_state()
-        return next_state, reward, done
+        return np.array(_state), reward, done

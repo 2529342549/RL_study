@@ -5,7 +5,7 @@
 @license: (C) Copyright 2013-2017, Node Supply Chain Manager Corporation Limited. 
 @contact: 2529342549@qq.com
 @software: pycharm
-@file: main.py
+@file: main_maze2.py
 @time: 2022/2/9 下午8:24
 @desc:
 """
@@ -55,7 +55,7 @@ def main():
                 prob = model.pi(torch.from_numpy(state).float())
                 m = Categorical(prob)
                 action = m.sample().item()
-                print(prob, action)
+                # print(prob, action)
                 # 用最优action进行交互# noinspection PyTypeChecker
                 state_prime, r, done, info = env.step(action)
                 # print(r)

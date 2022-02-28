@@ -9,7 +9,6 @@
 @time: 2022/2/8 下午12:22
 @desc:
 """
-import os
 import sys
 import time
 import torch
@@ -20,12 +19,8 @@ import numpy as np
 import math, random
 import warnings
 
-from distlib.compat import raw_input
-from matplotlib import pyplot as plt
 from env_maze_dqn import Env
-from Logger_info.logger import Log
 
-logging = Log(__name__).getlog()
 warnings.filterwarnings('ignore')
 sys.path.append('..')
 # 超参数
@@ -86,7 +81,7 @@ class DQN(object):
         self.load_models = False
         # load model
         if self.load_models:
-            checkpoint = torch.load("data/" + "model.pt")
+            checkpoint = torch.load("data/output/" + "model.pt")
             self.target_net.load_state_dict(checkpoint['target_net'])
             self.eval_net.load_state_dict(checkpoint['eval_net'])
             self.optimizer.load_state_dict(checkpoint['optimizer'])
@@ -197,49 +192,5 @@ class DQN(object):
         :return:
         """
         state = {'target_net': self.target_net.state_dict(), 'eval_net': self.eval_net.state_dict(),
-                 'optimizer': self.optimizer.state_dict(), 'epoch': epoch}
-        torch.save(state, "/home/hhd/PycharmProjects/RL_study_/dqn/maze/data/" + "model.pt")
-
-
-if __name__ == '__main__':
-    key = raw_input('Output directory already exists! Overwrite the folder? (y/n)')
-    if key == 'y':
-        with open(r'data/output.log', 'a+', ) as test:
-            test.truncate(0)
-    dqn = DQN()
-    start_time = time.time()
-
-    for epoch in range(dqn.start_epoch, 10000):
-        state = env.reset()
-        # print s
-        # init toltal reward
-        episode_reward_sum = 0
-        done = False
-        # each loop represents a step
-        for t in range(6000):
-            action = dqn.choose_action(state)
-            # print a
-            s_, reward, done = env.step(action)
-            # print s_
-            # store samples
-            dqn.store_transition(state, action, reward, s_)
-            episode_reward_sum += reward
-            # update state
-            state = s_
-            if dqn.memory_counter > BATCH_SIZE:
-                # 开始学习 (抽取记忆，即32个transition，并对评估网络参数进行更新，并在开始学习后每隔100次将评估网络的参数赋给目标网络)
-                dqn.learn()
-            if epoch % 100 == 0:
-                dqn.save_model()
-            if t >= 2500:
-                done = True
-            if done:
-                # print e
-                logging.info(
-                    'Ep: %d score: %.2f memory: %d epsilon: %.2f ' % (epoch, episode_reward_sum, dqn.memory_counter, dqn.epsilon))
-                # param_keys = ['epsilon']
-                # param_values = [dqn.epsilon]
-                # param_dictionary = dict(zip(param_keys, param_values))
-                break  # 该episode结束
-            if dqn.epsilon > dqn.epsilon_min:
-                dqn.epsilon = dqn.epsilon - 0.0001
+                 'optimizer': self.optimizer.state_dict()}
+        torch.save(state, "/home/hhd/PycharmProjects/RL_study_/dqn/maze/data/output/" + "model.pt")

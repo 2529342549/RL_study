@@ -5,11 +5,13 @@
 @license: (C) Copyright 2013-2017, Node Supply Chain Manager Corporation Limited.
 @contact: 2529342549@qq.com
 @software: pycharm
-@file: main.py
+@file: main_maze2.py
 @time: 2022/2/9 下午8:24
 @desc:
 """
 # 主函数：简化ppo 这里先交互T_horizon个回合然后停下来学习训练，再交互，这样循环10000次
+import random
+
 import gym
 import torch
 from matplotlib import pyplot as plt
@@ -41,9 +43,18 @@ def main():
             # 由当前policy模型输出最优action
             # print(type(state), state)
             prob = model.pi(torch.from_numpy(state).float())
-            m = Categorical(prob)
-            action = m.sample().item()
-            print(prob, action)
+            # m = Categorical(prob)
+            p_ = random.uniform(0, 1)
+            a = int(torch.argmax(prob).numpy())
+            # print(a)
+            if p_ > 0.9:
+                action_item =random.choice(prob).item()
+                b=prob.detach().numpy().tolist()
+                action=torch.tensor(b.index(action_item))
+            else:
+                action = a
+            # action = m.sample()
+            # print(prob, action)
             # 用最优action进行交互# noinspection PyTypeChecker
             state_prime, r, done = env.step(action)
             # print(r)
@@ -61,7 +72,7 @@ def main():
             # 模型训练
             model.train_net()
         # score = score * 0.99 + t * 0.01
-        # logging.info("# of episode :{}, avg score : {:.1f}".format(n_epi, score))
+        logging.info("# of episode :{}, avg score : {:.1f}".format(n_epi, score))
         score = 0
 
     # env.close()

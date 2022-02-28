@@ -9,7 +9,7 @@
 
 # This Program is tested on Gazebo Simulator
 # This script uses the cv_bridge package to convert images coming on the topic
-# sensor_msgs/Image to OpenCV messages and then convert their colors from RGB to HSV
+# sensor_msgs/data to OpenCV messages and then convert their colors from RGB to HSV
 # then apply a threshold for hues near the color yellow to obtain the binary image
 # to be able to see only the yellow line and then follow that line
 # It uses an approach called proportional and simply means

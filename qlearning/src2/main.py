@@ -5,7 +5,7 @@
 @license: (C) Copyright 2013-2017, Node Supply Chain Manager Corporation Limited. 
 @contact: 2529342549@qq.com
 @software: pycharm
-@file: main.py
+@file: main_maze2.py
 @time: 2022/2/5 下午5:17
 @desc:
 """

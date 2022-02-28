@@ -42,7 +42,7 @@ class train_sys:
                     dir = '↑'
                 next_state, self.reward, done = self.env.step(action)
                 self.Agent.add_buffer(self.state, action_one_hot, self.reward, next_state, action_prob, done, self.env.tot_reward, epi)
-                # print("log>> agent " + dir + " " + str(self.env.tot_reward) + " " + str(self.reward))
+                print("log>> agent " + dir + " " + str(self.env.tot_reward) + " " + str(self.reward))
 
                 self.state = next_state
                 self.Agent.count = self.env.steps
@@ -62,8 +62,6 @@ class train_sys:
                             return 0
 
             # print("Episode >> " +str(epi)+" reward("+str(self.env.tot_reward)+")")
-
-
 
     def evaluate(self):
         # print("log // evaluate model start")
@@ -97,7 +95,7 @@ class train_sys:
                     # print("log // test fail")
                     return False
             score = self.env.tot_reward
-            # print("log // epi " + str(i) + " >> steps : " + str(step) + " / score : " + str(score))
+            print("log // epi " + str(i) + " >> steps : " + str(step) + " / score : " + str(score))
 
             sum_steps += step
 
@@ -169,7 +167,7 @@ class test_sys:
             self.env.render()
             action, action_one_hot = self.Agent.get_act(self.state)
 
-            # print("log>> agent "+str(action)+" "+str(self.env.reward)+" "+str(self.Agent.steps))
+            print("log>> agent " + str(action) + " " + str(self.env.reward) + " " + str(self.Agent.steps))
             next_state, self.reward, done = self.env.step(action)
             self.Box_Agent.add_memory(self.state, action_one_hot, self.reward, done)
             self.state = next_state

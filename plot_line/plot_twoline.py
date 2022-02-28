@@ -19,11 +19,11 @@ def main():
     parser.add_argument('--plot_reward', default=True, action='store_true')
     parser.add_argument('--plot_train', default=True, action='store_true')
     parser.add_argument('--plot_new_train', default=True, action='store_true')
-    parser.add_argument('--window_size', type=int, default=500)
+    parser.add_argument('--window_size', type=int, default=300)
     args = parser.parse_args()
 
     # define the names of the models you want to plot and the longest episodes you want to show
-    models = ['d_distance', 'd_factor']
+    # models = ['d_distance', 'd_factor']
     max_episodes = 10000
 
     ax1 = ax2 = ax3 = ax4 = None
@@ -91,12 +91,12 @@ def main():
         if args.plot_sr:
             if ax1 is None:
                 _, ax1 = plt.subplots()
-            if args.plot_train:
-                ax1.plot(range(len(train_sr_smooth)), train_sr_smooth)
-                ax1_legends.append('d_distance')
             if args.plot_new_train:
                 ax1.plot(range(len(new_train_sr_smooth)), new_train_sr_smooth, '-r')
-                ax1_legends.append('d_factor')
+                ax1_legends.append('Ours')
+            if args.plot_train:
+                ax1.plot(range(len(train_sr_smooth)), train_sr_smooth)
+                ax1_legends.append('Baseline')
 
             ax1.legend(ax1_legends, shadow=True, loc='best')
             ax1.spines['top'].set_visible(False)  # 去掉上边框
@@ -109,12 +109,12 @@ def main():
         if args.plot_time:
             if ax2 is None:
                 _, ax2 = plt.subplots()
-            if args.plot_train:
-                ax2.plot(range(len(train_time_smooth)), train_time_smooth)
-                ax2_legends.append('d_distance')
             if args.plot_new_train:
                 ax2.plot(range(len(new_train_time_smooth)), new_train_time_smooth, '-r')
-                ax2_legends.append('d_factor')
+                ax2_legends.append('Ours')
+            if args.plot_train:
+                ax2.plot(range(len(train_time_smooth)), train_time_smooth)
+                ax2_legends.append('Baseline')
 
             ax2.legend(ax2_legends, shadow=True, loc='best')
             ax2.spines['top'].set_visible(False)  # 去掉上边框
@@ -127,12 +127,12 @@ def main():
         if args.plot_cr:
             if ax3 is None:
                 _, ax3 = plt.subplots()
-            if args.plot_train:
-                ax3.plot(range(len(train_cr_smooth)), train_cr_smooth)
-                ax3_legends.append('d_distance')
             if args.plot_new_train:
                 ax3.plot(range(len(new_train_cr_smooth)), new_train_cr_smooth, '-r')
-                ax3_legends.append('d_factor')
+                ax3_legends.append('Ours')
+            if args.plot_train:
+                ax3.plot(range(len(train_cr_smooth)), train_cr_smooth)
+                ax3_legends.append('Baseline')
 
             ax3.legend(ax3_legends, shadow=True, loc='best')
             ax3.spines['top'].set_visible(False)  # 去掉上边框
@@ -145,14 +145,14 @@ def main():
         if args.plot_reward:
             if ax4 is None:
                 _, ax4 = plt.subplots()
+            if args.plot_new_train:
+                ax4.plot(range(len(new_train_reward_smooth)), new_train_reward_smooth, '-r')
+                ax4_legends.append('Ours')
             if args.plot_train:
                 ax4.plot(range(len(train_reward_smooth)), train_reward_smooth)
                 # ax4_legends.append(models[i])
-                ax4_legends.append('d_distance')
+                ax4_legends.append('Baseline')
 
-            if args.plot_new_train:
-                ax4.plot(range(len(new_train_reward_smooth)), new_train_reward_smooth, '-r')
-                ax4_legends.append('d_factor')
 
             ax4.legend(ax4_legends, shadow=True, loc='best')
             # ax4.grid(True)

@@ -17,7 +17,7 @@ from torch.distributions import MultivariateNormal
 
 class PPO:
     """
-        This is the PPO class we will use as our model in main.py
+        This is the PPO class we will use as our model in main_maze2.py
     """
 
     def __init__(self, policy_class, env, **hyperparameters):

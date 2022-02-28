@@ -1,6 +1,6 @@
 """
 	This file contains the arguments to parse at command line.
-	File main.py will call get_args, which then the arguments
+	File main_maze2.py will call get_args, which then the arguments
 	will be returned.
 """
 import argparse
