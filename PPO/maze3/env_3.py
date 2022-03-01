@@ -21,7 +21,7 @@ class Env(tk.Tk):
         tk.Tk.__init__(self)
         self.action_space = ['u', 'd', 'l', 'r']
         self.n_actions = len(self.action_space)
-        self.title('PPO for Maze')
+        self.title('PPO for Maze3')
         self.geometry('{0}x{1}'.format(HEIGHT * UNIT, HEIGHT * UNIT))
         self.shapes = self.load_images()
         self.canvas = self._build_canvas()
@@ -34,14 +34,14 @@ class Env(tk.Tk):
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                       [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -64,7 +64,7 @@ class Env(tk.Tk):
             canvas.create_line(x0, y0, x1, y1)
 
         # add img to canvas
-        self.circle = canvas.create_image(165, 165, image=self.shapes[2])
+        self.circle = canvas.create_image(225, 375, image=self.shapes[2])
         # print self.circle
         self.rectangle = canvas.create_image(315, 315, image=self.shapes[0])
         self.triangle1 = canvas.create_image(195, 195, image=self.shapes[1])
@@ -160,13 +160,13 @@ class Env(tk.Tk):
         # reward function
         # print(self.migong[_state[0]][_state[1]])
         if self.migong[_state[0]][_state[1]] == 2:
-            reward = 15
+            reward = 2
             done = True
         elif self.migong[_state[0]][_state[1]] == 3:
-            reward = -5
+            reward = -0.5
             done = True
-        elif _state[0] in [0, 20] or _state[1] in [0, 20]:
-            reward = -5
+        elif _state[0] in [6, 14] or _state[1] in [6, 14]:
+            reward = -0.5
             done = True
         else:
             reward = 0

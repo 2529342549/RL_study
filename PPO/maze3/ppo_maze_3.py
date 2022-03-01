@@ -14,13 +14,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+
 # Hyperparameters
-learning_rate = 0.0001  # 学习率
-gamma = 0.9  #
+learning_rate = 0.001  # 学习率
+gamma = 0.95  #
 lmbda = 0.95
 eps_clip = 0.2
-K_epoch = 5
-T_horizon = 20
+K_epoch = 20
+
 
 
 # 定义PPO架构
@@ -29,9 +30,10 @@ class PPO(nn.Module):
         super(PPO, self).__init__()
         self.data = []  # 用来存储交互数据
 
-        self.fc1 = nn.Linear(2, 10)  # 由于倒立摆环境简单，这里仅用一个线性变换来训练数据
-        self.fc_pi = nn.Linear(10, 4)  # policy函数（输出action）的全连接层
-        self.fc_v = nn.Linear(10, 1)  # value函数（输出v）的全连接层
+        self.fc1 = nn.Linear(2, 64)
+        self.fc2 = nn.Linear(64, 64)
+        self.fc_pi = nn.Linear(64, 4)  # policy函数（输出action）的全连接层
+        self.fc_v = nn.Linear(64, 1)  # value函数（输出v）的全连接层
         self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)  # 优化器
 
     # policy函数
@@ -40,6 +42,7 @@ class PPO(nn.Module):
     def pi(self, x, softmax_dim=0):
         # print(x)
         x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
         x = self.fc_pi(x)
         prob = F.softmax(x, dim=softmax_dim)
         return prob
@@ -49,6 +52,7 @@ class PPO(nn.Module):
     # 输出x状态下value的预测值（reward）,提供给policy函数作为参考值
     def v(self, x):
         x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
         v = self.fc_v(x)
         return v
 

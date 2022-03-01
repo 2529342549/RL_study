@@ -18,7 +18,7 @@ from matplotlib import pyplot as plt
 from past.builtins import raw_input
 from torch.distributions import Categorical
 from logger import Log
-from ppo_maze_3 import T_horizon, PPO
+from ppo_maze_3 import  PPO
 from env_3 import Env
 
 logging = Log(__name__).getlog()
@@ -43,17 +43,8 @@ def main():
             # 由当前policy模型输出最优action
             # print(type(state), state)
             prob = model.pi(torch.from_numpy(state).float())
-            # m = Categorical(prob)
-            p_ = random.uniform(0, 1)
-            a = int(torch.argmax(prob).numpy())
-            # print(a)
-            if p_ > 0.9:
-                action_item =random.choice(prob).item()
-                b=prob.detach().numpy().tolist()
-                action=torch.tensor(b.index(action_item))
-            else:
-                action = a
-            # action = m.sample()
+            m = Categorical(prob)
+            action = m.sample()
             # print(prob, action)
             # 用最优action进行交互# noinspection PyTypeChecker
             state_prime, r, done = env.step(action)

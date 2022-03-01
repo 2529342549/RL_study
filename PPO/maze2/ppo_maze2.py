@@ -44,8 +44,8 @@ Transition = namedtuple('Transition', ['state', 'action', 'a_log_prob', 'reward'
 class Actor(nn.Module):
     def __init__(self):
         super(Actor, self).__init__()
-        self.fc1 = nn.Linear(num_state, 256)
-        self.fc2 = nn.Linear(256, 64)
+        self.fc1 = nn.Linear(num_state, 64)
+        self.fc2 = nn.Linear(64, 64)
         self.action_head = nn.Linear(64, num_action)
 
     def forward(self, x):
@@ -58,8 +58,8 @@ class Actor(nn.Module):
 class Critic(nn.Module):
     def __init__(self):
         super(Critic, self).__init__()
-        self.fc1 = nn.Linear(num_state, 256)
-        self.fc2 = nn.Linear(256, 64)
+        self.fc1 = nn.Linear(num_state, 64)
+        self.fc2 = nn.Linear(64, 64)
         self.state_value = nn.Linear(64, 1)
 
     def forward(self, x):
@@ -74,7 +74,7 @@ class PPO(object):
     max_grad_norm = 0.5
     ppo_update_time = 100
     buffer_capacity = 100000
-    batch_size = 256
+    batch_size = 32
 
     def __init__(self):
         super(PPO, self).__init__()
