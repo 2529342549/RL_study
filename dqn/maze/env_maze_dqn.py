@@ -34,14 +34,14 @@ class Env(tk.Tk):
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                       [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                       [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
                        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -64,17 +64,17 @@ class Env(tk.Tk):
             canvas.create_line(x0, y0, x1, y1)
 
         # add img to canvas
-        self.circle = canvas.create_image(165, 165, image=self.shapes[2])
+        self.circle = canvas.create_image(225, 375, image=self.shapes[2])
         # print self.circle
         self.rectangle = canvas.create_image(315, 315, image=self.shapes[0])
         self.triangle1 = canvas.create_image(195, 195, image=self.shapes[1])
         self.triangle2 = canvas.create_image(195, 435, image=self.shapes[1])
         self.triangle3 = canvas.create_image(435, 195, image=self.shapes[1])
         self.triangle4 = canvas.create_image(435, 435, image=self.shapes[1])
-        self.triangle5 = canvas.create_image(255, 345, image=self.shapes[1])
-        self.triangle6 = canvas.create_image(225, 345, image=self.shapes[1])
-        self.triangle7 = canvas.create_image(345, 225, image=self.shapes[1])
-        self.triangle8 = canvas.create_image(345, 255, image=self.shapes[1])
+        self.triangle5 = canvas.create_image(255, 345, image=self.shapes[3])
+        self.triangle6 = canvas.create_image(225, 345, image=self.shapes[3])
+        self.triangle7 = canvas.create_image(345, 225, image=self.shapes[3])
+        self.triangle8 = canvas.create_image(345, 255, image=self.shapes[3])
 
         # pack all
         canvas.pack()
@@ -111,11 +111,12 @@ class Env(tk.Tk):
         self.total_y = 0
         self.start_env()
         # return observation
-        res_state = np.array(self.coords_to_state(self.canvas.coords(self.rectangle)))
+        # res_state = np.array(self.coords_to_state(self.canvas.coords(self.rectangle)))
+        res_state = np.array([10, 10])
         return res_state
 
     def render(self):
-        time.sleep(0.003)
+        time.sleep(0.01)
         self.update()
 
     def get_state(self):
@@ -124,25 +125,24 @@ class Env(tk.Tk):
         return data
 
     def step(self, action):
-        state = self.canvas.coords(self.rectangle)
+        rectangle_state = self.canvas.coords(self.rectangle)
         base_action = np.array([0, 0])
         self.render()
 
         if action == 0:  # up
-            if state[1] > UNIT:
+            if rectangle_state[1] > UNIT:
                 base_action[1] -= UNIT
                 self.y1 -= 1
         elif action == 1:  # down
-            if state[1] < (HEIGHT - 1) * UNIT:
+            if rectangle_state[1] < (HEIGHT - 1) * UNIT:
                 base_action[1] += UNIT
                 self.y1 += 1
         elif action == 2:  # left
-            if state[0] > UNIT:
+            if rectangle_state[0] > UNIT:
                 base_action[0] -= UNIT
                 self.x1 -= 1
-
         elif action == 3:  # right
-            if state[0] < (WIDTH - 1) * UNIT:
+            if rectangle_state[0] < (WIDTH - 1) * UNIT:
                 base_action[0] += UNIT
                 self.x1 += 1
 
@@ -150,23 +150,24 @@ class Env(tk.Tk):
         self.canvas.move(self.rectangle, base_action[0], base_action[1])
         # move rectangle to top level of canvas
         self.canvas.tag_raise(self.rectangle)
-        next_state = self.canvas.coords(self.rectangle)
+        # next_state = self.canvas.coords(self.rectangle)
         # print next_state
-        _state = self.coords_to_state(next_state)
+        _state = [self.y1, self.x1]
         # print(_state)
 
         # reward function
+        # print([self.y1, self.x1], self.migong[_state[0]][_state[1]])
         if self.migong[_state[0]][_state[1]] == 2:
             reward = 10
             done = True
         elif self.migong[_state[0]][_state[1]] == 3:
             reward = -9
             done = True
-        elif _state[0] in [0, 20] or _state[1] in [0, 20]:
-            reward = -5
+        elif _state[0] in [6, 14] or _state[1] in [6, 14]:
+            reward = -9
             done = True
         else:
-            reward = -0.1
+            reward = -0.01
             done = False
 
         return np.array(_state), reward, done

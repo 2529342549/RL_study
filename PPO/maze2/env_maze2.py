@@ -110,7 +110,8 @@ class Env(tk.Tk):
         self.total_y = 0
         self.start_env()
         # return observation
-        res_state = np.array(self.coords_to_state(self.canvas.coords(self.rectangle)))
+        # res_state = np.array(self.coords_to_state(self.canvas.coords(self.rectangle)))
+        res_state = np.array([10,10])
         return res_state
 
     def render(self):
@@ -153,7 +154,7 @@ class Env(tk.Tk):
         # next_state = [self.x1, self.y1]
         # print next_state
         # _state = self.coords_to_state(next_state)
-        _state = [self.x1, self.y1]
+        _state = [self.y1, self.x1]
         # print(_state)
 
         # reward function
