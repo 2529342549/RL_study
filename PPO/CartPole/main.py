@@ -36,7 +36,7 @@ def plot(steps):
 
 def main():
     # 创建倒立摆环境
-    env = gym.make('CartPole-v0')
+    env = gym.make('CartPole-v1')
     model = PPO()
     score = 0.0
     running_rewards = 20

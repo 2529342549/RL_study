@@ -20,9 +20,9 @@ import torch.optim as optim
 from collections import namedtuple
 from torch.distributions import Normal, Categorical
 from torch.utils.data.sampler import BatchSampler, SubsetRandomSampler
-
 from torch.utils.tensorboard import SummaryWriter
 
+# tensorboard --logdir
 # Parameters
 
 gamma = 0.99
@@ -78,7 +78,7 @@ class PPO(object):
         super(PPO, self).__init__()
         self.actor_net = Actor()
         self.critic_net = Critic()
-        self.writer = SummaryWriter('../data/output')
+        self.writer = SummaryWriter('data/output')
         self.buffer = []
         self.counter = 0
         self.training_step = 0

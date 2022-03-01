@@ -14,6 +14,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from torch.utils.tensorboard import SummaryWriter
 
 # Hyperparameters
 learning_rate = 0.0005  # 学习率
@@ -23,13 +24,15 @@ eps_clip = 0.1
 K_epoch = 3
 T_horizon = 20
 
+writer = SummaryWriter('data/output')
+
 
 # 定义PPO架构
 class PPO(nn.Module):
     def __init__(self):
         super(PPO, self).__init__()
         self.data = []  # 用来存储交互数据
-
+        self.training_step = 0
         self.fc1 = nn.Linear(4, 256)  # 由于倒立摆环境简单，这里仅用一个线性变换来训练数据
         self.fc_pi = nn.Linear(256, 2)  # policy函数（输出action）的全连接层
         self.fc_v = nn.Linear(256, 1)  # value函数（输出v）的全连接层
@@ -110,8 +113,9 @@ class PPO(nn.Module):
             surr2 = torch.clamp(ratio, 1 - eps_clip, 1 + eps_clip) * advantage
             # 这里简化ppo，把policy loss和value loss放在一起计算
             loss = -torch.min(surr1, surr2) + F.smooth_l1_loss(self.v(state), td_target.detach())
-
+            writer.add_scalar('loss/total_loss', loss, global_step=self.training_step)
             # 梯度优化
             self.optimizer.zero_grad()
             loss.mean().backward()
             self.optimizer.step()
+            self.training_step += 1
